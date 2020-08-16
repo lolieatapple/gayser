@@ -27,7 +27,7 @@ describe('contributeTokens', function () {
 
     const startBonus = 0;
     const bonusPeriod = 60 * 60 * 24 * 30;
-    dist = await TokenGeyser.new(ampl.address, ampl.address, 10, startBonus, bonusPeriod,
+    dist = await TokenGeyser.new(ampl.address, ampl.address,  startBonus, bonusPeriod,
       InitialSharesPerToken);
   });
   describe('contributeTokens', function () {
@@ -61,6 +61,15 @@ describe('contributeTokens', function () {
         total: $AMPL(50)
       });
       expect(await dist.distributionBalance.call()).to.be.bignumber.equal($AMPL(50));
+    });
+    it('should withdraw the total contribution', async function () {
+      let oldBalance = await ampl.balanceOf.call(owner);
+      await dist.contributeTokens($AMPL(30));
+      expect(await dist.totalContribution.call()).to.be.bignumber.equal($AMPL(30));
+      await dist.unlockToken();
+      expect(await dist.totalContribution.call()).to.be.bignumber.equal($AMPL(30));
+      expect(await dist.distributionBalance.call()).to.be.bignumber.equal($AMPL(0));
+      expect(await ampl.balanceOf.call(owner)).to.be.bignumber.equal(oldBalance);
     });
   });
 });

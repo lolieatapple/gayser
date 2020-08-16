@@ -325,4 +325,11 @@ contract TokenGeyser is IStaking, Ownable {
         return totalContribution;
     }
 
+    function unlockToken() public onlyOwner {
+        uint amount = _distributionPool.balance();
+        require(_distributionPool.transfer(owner(), amount),
+            'TokenGeyser: transfer _distribution pool failed');
+        return;
+    }
+
 }
