@@ -1,4 +1,6 @@
 const connectionConfig = require('frg-ethereum-runners/config/network_config.json');
+const PrivateKeyProvider = require('truffle-privatekey-provider');
+const HDWalletProvider = require('truffle-hdwallet-provider');
 
 const mainnetUrl = 'https://mainnet.infura.io/v3/2521699167dc43c8b4c15f07860c208a';
 
@@ -18,7 +20,6 @@ function keystoreProvider (providerURL) {
   return new HDWalletProvider(wallet._privKey.toString('hex'), providerURL);
 }
 
-
 module.exports = {
   networks: {
     ganacheUnitTest: connectionConfig.ganacheUnitTest,
@@ -30,6 +31,21 @@ module.exports = {
       provider: () => keystoreProvider(mainnetUrl),
       gasPrice: 30000000000
     },
+    development: {
+      host: '127.0.0.1',
+      port: 7545,
+      network_id: '*',
+      gasPrice: 1e9,
+      gasLimit: 1e7,
+      from: '0x3EbF0B2543E5430474917d20acF92F7C15196DD0'
+    },
+    rinkeby: {
+      provider: () => new PrivateKeyProvider('', 'https://rinkeby.infura.io/v3/f977681c79004fad87aa00da8f003597'),
+      network_id: 4,
+      gasPrice: 10e9,
+      gasLimit: 4700000,
+      skipDryRun: true
+    }
   },
   mocha: {
     enableTimeouts: false,

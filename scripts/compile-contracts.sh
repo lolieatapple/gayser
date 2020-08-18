@@ -15,8 +15,8 @@ mkdir -p $PROJECT_DIR/build/contracts
 echo "-----Compiling project"
 npx oz compile --solc-version $SOLVERSION
 
-echo "-----Compiling UFragments contract"
-cd $PROJECT_DIR/node_modules/uFragments
-npx oz compile --solc-version 0.4.24
-cd $PROJECT_DIR
-cp $PROJECT_DIR/node_modules/uFragments/build/contracts/UFragments.json $PROJECT_DIR/build/contracts/
+# echo "-----Compiling UFragments contract"
+# cd $PROJECT_DIR/node_modules/uFragments
+# npx oz compile --solc-version 0.4.24
+# cd $PROJECT_DIR
+# cp $PROJECT_DIR/node_modules/uFragments/build/contracts/UFragments.json $PROJECT_DIR/build/contracts/
