@@ -66,7 +66,6 @@ contract TokenGeyser is IStaking, Ownable {
     // If lastAccountingTimestampSec is 0, there's no entry for that user.
     struct UserTotals {
         uint256 staking; // the token A
-        uint256 stakingShares;
         uint256 stakingShareSeconds;
         uint256 lastAccountingTimestampSec;
     }
@@ -162,7 +161,6 @@ contract TokenGeyser is IStaking, Ownable {
 
         // 1. User Accounting
         UserTotals storage totals = _userTotals[beneficiary];
-        totals.stakingShares = totals.stakingShares.add(mintedStakingShares);
         totals.staking = totals.staking.add(amount);
         totals.lastAccountingTimestampSec = now;
 
@@ -239,7 +237,6 @@ contract TokenGeyser is IStaking, Ownable {
                 amountLeft = 0;
             }
         }
-        totals.stakingShares = totals.stakingShares.sub(rewardAmount);
         totals.staking = totals.staking.sub(amount);
         // interactions
         require(_stakingPool.transfer(msg.sender, amount),

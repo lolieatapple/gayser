@@ -173,7 +173,7 @@ describe('unstaking', function () {
         await dist.unstake($AMPL(250), [], { from: anotherAccount });
         expect(await dist.totalStaked.call()).to.be.bignumber.equal($AMPL(250));
         expect(await dist.totalStakedFor.call(anotherAccount)).to.be.bignumber.equal($AMPL(250));
-        checkAmplAprox(await totalRewardsFor(anotherAccount), 375); // (.5 * .75 * 1000) + 250
+        checkAmplAprox(await totalRewardsFor(anotherAccount), 250);
       });
       it('should transfer back staked tokens + rewards', async function () {
         const _b = await ampl.balanceOf.call(anotherAccount);
@@ -345,12 +345,12 @@ describe('unstaking', function () {
         checkAmplAprox(await totalRewardsFor(owner), rewardsOwner);
       });
       it('should update the total staked and rewards', async function () {
-        let bb = await dist.distributionBalance.call();
-        console.log("bb: ", bb.toString(10))
+        const bb = await dist.distributionBalance.call();
+        console.log('bb: ', bb.toString(10));
         expect(await totalRewardsFor(anotherAccount)).to.be.bignumber.equal($AMPL(rewardsAnotherAccount));
         expect(await dist.totalStakedFor.call(anotherAccount)).to.be.bignumber.equal($AMPL(10000));
-        let tx = await dist.unstake($AMPL(10000), [], { from: anotherAccount });
-        console.log("unlock 350 tx:", JSON.stringify(tx.logs,null,4))
+        const tx = await dist.unstake($AMPL(10000), [], { from: anotherAccount });
+        console.log('unlock 350 tx:', JSON.stringify(tx.logs, null, 4));
         expect(await dist.totalStaked.call()).to.be.bignumber.equal($AMPL(8000));
         expect(await dist.totalStakedFor.call(anotherAccount)).to.be.bignumber.equal($AMPL(0));
         expect(await dist.totalStakedFor.call(owner)).to.be.bignumber.equal($AMPL(8000));
