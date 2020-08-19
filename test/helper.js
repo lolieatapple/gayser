@@ -21,7 +21,7 @@ async function invokeRebase (ampl, perc) {
 }
 
 function checkAmplAprox (x, y) {
-  checkAprox(x, $AMPL(y), 10 ** 6);
+  checkAprox(x, $AMPL(y), 10 ** AMPL_DECIMALS);
 }
 
 function checkSharesAprox (x, y) {

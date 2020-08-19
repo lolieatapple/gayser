@@ -66,7 +66,6 @@ contract TokenGeyser is IStaking, Ownable {
     // If lastAccountingTimestampSec is 0, there's no entry for that user.
     struct UserTotals {
         uint256 staking; // the token A
-        uint256 stakingShares;
         uint256 stakingShareSeconds;
         uint256 lastAccountingTimestampSec;
     }
@@ -107,6 +106,16 @@ contract TokenGeyser is IStaking, Ownable {
      */
     function getStakingToken() public view returns (IERC20) {
         return _stakingPool.token();
+    }
+
+    function setInitialSharesPerToken(uint init) public onlyOwner {
+        _initialSharesPerToken = init;
+    }
+    function getInitialSharesPerToken() public view returns(uint) {
+        return _initialSharesPerToken;
+    }
+    function setBonusPeriod(uint period) public onlyOwner{
+        bonusPeriodSec = period;
     }
 
     /**
@@ -152,7 +161,6 @@ contract TokenGeyser is IStaking, Ownable {
 
         // 1. User Accounting
         UserTotals storage totals = _userTotals[beneficiary];
-        totals.stakingShares = totals.stakingShares.add(mintedStakingShares);
         totals.staking = totals.staking.add(amount);
         totals.lastAccountingTimestampSec = now;
 
@@ -223,13 +231,12 @@ contract TokenGeyser is IStaking, Ownable {
                 uint256 oneRewardAmountAll = computeNewReward(0, lastStake.stakingShares, stakeTimeSec);
                 uint256 oneRewardAmountReal = oneRewardAmountAll.mul(amountLeft).div(lastStake.staking);
                 rewardAmount += oneRewardAmountReal;
-                lastStake.stakingShares = lastStake.stakingShares.sub(oneRewardAmountReal);
-                lastStake.staking = lastStake.stakingShares.sub(amountLeft);
+                lastStake.stakingShares =  lastStake.stakingShares.mul(lastStake.staking - amountLeft).div(lastStake.staking);
+                lastStake.staking = lastStake.staking.sub(amountLeft);
 
                 amountLeft = 0;
             }
         }
-        totals.stakingShares = totals.stakingShares.sub(rewardAmount);
         totals.staking = totals.staking.sub(amount);
         // interactions
         require(_stakingPool.transfer(msg.sender, amount),
@@ -323,6 +330,13 @@ contract TokenGeyser is IStaking, Ownable {
         totalContribution += amount;
         emit Contributed(amount, totalContribution);
         return totalContribution;
+    }
+
+    function unlockToken() public onlyOwner {
+        uint amount = _distributionPool.balance();
+        require(_distributionPool.transfer(owner(), amount),
+            'TokenGeyser: transfer _distribution pool failed');
+        return;
     }
 
 }
