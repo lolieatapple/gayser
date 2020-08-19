@@ -223,8 +223,8 @@ contract TokenGeyser is IStaking, Ownable {
                 uint256 oneRewardAmountAll = computeNewReward(0, lastStake.stakingShares, stakeTimeSec);
                 uint256 oneRewardAmountReal = oneRewardAmountAll.mul(amountLeft).div(lastStake.staking);
                 rewardAmount += oneRewardAmountReal;
-                lastStake.stakingShares = lastStake.stakingShares.sub(oneRewardAmountReal);
-                lastStake.staking = lastStake.stakingShares.sub(amountLeft);
+                lastStake.stakingShares =  lastStake.stakingShares.mul(lastStake.staking - amountLeft).div(lastStake.staking);
+                lastStake.staking = lastStake.staking.sub(amountLeft);
 
                 amountLeft = 0;
             }
