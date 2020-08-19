@@ -109,6 +109,16 @@ contract TokenGeyser is IStaking, Ownable {
         return _stakingPool.token();
     }
 
+    function setInitialSharesPerToken(uint init) public onlyOwner {
+        _initialSharesPerToken = init;
+    }
+    function getInitialSharesPerToken() public view returns(uint) {
+        return _initialSharesPerToken;
+    }
+    function setBonusPeriod(uint period) public onlyOwner{
+        bonusPeriodSec = period;
+    }
+
     /**
      * @return The token users receive as they unstake.
      */

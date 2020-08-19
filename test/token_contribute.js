@@ -12,7 +12,7 @@ const {
 
 const AmpleforthErc20 = contract.fromArtifact('UFragments');
 const TokenGeyser = contract.fromArtifact('TokenGeyser');
-const InitialSharesPerToken = 10 ** 6;
+const InitialSharesPerToken = 20000;
 
 let ampl, dist, owner, anotherAccount;
 describe('contributeTokens', function () {
@@ -46,6 +46,16 @@ describe('contributeTokens', function () {
       expect(await dist.totalContribution.call()).to.be.bignumber.equal($AMPL(10));
       await dist.contributeTokens($AMPL(10));
       expect(await dist.totalContribution.call()).to.be.bignumber.equal($AMPL(20));
+    });
+    it('setInitialSharesPerToken', async function () {
+      expect(await dist.getInitialSharesPerToken.call()).to.be.bignumber.equal(new BN(20000));
+      await dist.setInitialSharesPerToken(40000);
+      expect(await dist.getInitialSharesPerToken.call()).to.be.bignumber.equal(new BN(40000));
+    });
+    it('setBonusPeriod', async function () {
+      expect(await dist.bonusPeriodSec.call()).to.be.bignumber.equal(new BN(60 * 60 * 24 * 30));
+      await dist.setBonusPeriod(60*60*24*60);
+      expect(await dist.bonusPeriodSec.call()).to.be.bignumber.equal(new BN(60*60*24*60));
     });
     it('should log Contributed', async function () {
       const r = await dist.contributeTokens($AMPL(20));
